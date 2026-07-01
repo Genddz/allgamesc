@@ -8,9 +8,8 @@ local Window = Rayfield:CreateWindow({
     ConfigurationSaving = {Enabled = false}
 })
 
--- (Kode sisanya tetap sama persis seperti yang terakhir, jadi langsung pakai aja ya!)
 -- States
-local settings = {fly = false, noclip = false, esp = false, healthESP = false, tracerESP = false, hitbox = false}
+local settings = {fly = false, noclip = false, esp = false, healthESP = false, tracerESP = false, hitbox = false, autoRob = false}
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
@@ -18,8 +17,9 @@ local player = Players.LocalPlayer
 -- Tabs
 local PlayerTab = Window:CreateTab("Player", "user")
 local VisualTab = Window:CreateTab("Visuals", "eye")
+local InfoTab = Window:CreateTab("Server Info", "info") -- Tab Baru
 
--- Toggles
+-- Toggles & Labels
 PlayerTab:CreateToggle({Name = "Fly", Callback = function(v) settings.fly = v end})
 PlayerTab:CreateToggle({Name = "Noclip", Callback = function(v) settings.noclip = v end})
 
@@ -28,10 +28,16 @@ VisualTab:CreateToggle({Name = "Health ESP", Callback = function(v) settings.hea
 VisualTab:CreateToggle({Name = "Tracer ESP", Callback = function(v) settings.tracerESP = v end})
 VisualTab:CreateToggle({Name = "Hitbox Expander", Callback = function(v) settings.hitbox = v end})
 
+-- Label untuk Player Count
+local PlayerCountLabel = InfoTab:CreateLabel("Total Players: Loading...")
+
 -- SISTEM LOGIC
 local tracers = {}
 
 RunService.Stepped:Connect(function()
+    -- Update Total Players (Looping setiap frame)
+    PlayerCountLabel:Set("Total Players: " .. #Players:GetPlayers())
+
     local char = player.Character
     if char then
         if settings.noclip then
@@ -97,3 +103,6 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+
+-- Notify user
+Rayfield:Notify({Title = "GENDDZ V1 // ELITE", Content = "Server Info tab aktif!", Duration = 3})
